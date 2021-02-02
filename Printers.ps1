@@ -3,8 +3,8 @@
 # Uses a Group Policy Object's User Preference items to add printers.
 # Create the GPO but do not link it, it should be used by this script but NOT processed by group policy at logon.
 #
-# Katy Nicholson 04/08/2020
-# katynicholson.uk
+# Katy Nicholson 2020-08-04, updated 2021-02-02
+# https://katystech.blog
 
 # Set your domain and the GUID of the policy object here.
 $domain = "fqdn.of.your.domain"
@@ -82,7 +82,7 @@ Function evaluateFilters($Filters) {
         switch ($Filter.LocalName) {
             "FilterCollection" {
                 #Recurse through collections
-                return evaluateFilters $Filter
+                $return = evaluateFilters $Filter
             }
             "FilterGroup" {
                 #Filter to whether the user (or computer) is a member of the specified group

@@ -137,25 +137,33 @@ Function evaluateFilters($Filters) {
         }
     }
     
-    #Evaluate the filters = AND or OR the first two results, depending on what is configured, then AND/OR this with the next value, repeat until done.
-    $previousItem = $true
-    foreach ($item in $FilterResults) {
-
-        if ($item[0] -eq "AND") {
-            if ($previousItem -and $item[1]) {
-                $previousItem = $true
+    #Evaluate the filters = If only one, return that result, otherwise AND or OR the first two results, depending on what is configured, then AND/OR this with the next value, repeat until done.
+    if ($FilterResults.Count -gt 1) {
+        $firstItem = $true
+        foreach ($item in $FilterResults) {
+            if ($firstItem) {
+                $previousItem = $item[1]
+                $firstItem = $false
             } else {
-                $previousItem = $false
-            }
-        } else {
-            if ($previousItem -or $item[1]) {
-                $previousItem = $true
-            } else {
-                $previousItem = $false
+                if ($item[0] -eq "AND") {
+                    if ($previousItem -and $item[1]) {
+                        $previousItem = $true
+                    } else {
+                        $previousItem = $false
+                    }
+                } else {
+                    if ($previousItem -or $item[1]) {
+                        $previousItem = $true
+                    } else {
+                        $previousItem = $false
+                    }
+                }
             }
         }
+        return $previousItem
+    } else {
+        return $FilterResults[0][1]
     }
-    return $previousItem
     
 }
 
